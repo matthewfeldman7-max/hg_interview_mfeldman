@@ -1,0 +1,12 @@
+[project]
+name = "hg-interview"
+version = "0.1.0"
+description = "Hg Data Engineer take-home: portfolio KPI data quality, dbt model and ingestion spec"
+readme = "README.md"
+authors = [
+    { name = "Matt", email = "matthewfeldman7@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "dbt-duckdb>=1.11.0",
+]

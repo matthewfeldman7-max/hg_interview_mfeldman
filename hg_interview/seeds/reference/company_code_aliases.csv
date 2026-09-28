@@ -1,0 +1,3 @@
+raw_code,company_id,valid_from,valid_to,reason,approved_by
+TLR,PC-106,2024-09,2025-04,Code used before the company was renamed Tallow & Reed (TAL from 2025-05),TBC - Finance
+CАS,PC-105,,,Second letter is Cyrillic A (U+0410) - free-text code in the template,TBC - Finance

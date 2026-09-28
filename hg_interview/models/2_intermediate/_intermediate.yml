@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: int_kpi_submissions_versioned
+    description: Every submitted version per company-month, ranked latest first.
+    data_tests:
+      # Exactly one latest version per company-month, or totals double count
+      - unique:
+          arguments:
+            column_name: "concat(company_id, '|', period_month)"
+          config:
+            where: "is_latest"
+    columns:
+      - name: currency
+        description: After inference from the company master. Null = cannot be converted.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+  - name: int_company_months
+    description: Spine of expected company-months (investment/history start to exit/last complete month).
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "concat(company_id, '|', period_month)"
+
+  - name: int_kpi_monthly_latest
+    description: Latest version per reported company-month, converted to GBP.
+    columns:
+      - name: is_headcount_outlier
+        data_tests:
+          # Warns on values that look wrong; they stay in the data until confirmed
+          - accepted_values:
+              arguments:
+                values: [false]
+              config:
+                severity: warn
+      - name: is_churn_value_outlier
+        description: >
+          Churn outside the business range or far from the company's own history
+          (thresholds are placeholder vars until the business sets them).
+        data_tests:
+          # Warns on values that look wrong; they stay in the data until confirmed
+          - accepted_values:
+              arguments:
+                values: [false]
+              config:
+                severity: warn

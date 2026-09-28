@@ -1,0 +1,10 @@
+company_id,company_code,company_name,fund,sector,hq_country,reporting_currency,investment_date,status,exit_date
+PC-101,LUM,Lumenar Software,Meridian III,Legal & compliance software,United Kingdom,GBP,2022-03-31,Active,
+PC-102,VEL,Veldt Analytics,Meridian III,Insurance software,Netherlands,EUR,2023-06-30,Active,
+PC-103,ORQ,Orqa Systems,Halcyon II,ERP for SMEs,Germany,EUR,2021-11-15,Active,
+PC-104,NIM,Nimbus Payroll,Halcyon II,Payroll & HR SaaS,United Kingdom,GBP,2024-02-29,Active,
+PC-105,CAS,Castellan Health IT,Meridian III,Healthcare compliance,United States,USD,2022-09-30,Active,
+PC-106,TAL,Tallow & Reed (formerly Tallow Ledger Reed),Halcyon II,Accountancy practice software,United Kingdom,GBP,2020-07-31,Active,
+PC-107,BRV,Bravura Fleet,Halcyon II,Fleet management software,Sweden,SEK,2023-01-31,Active,
+PC-108,KOR,Korrigan Data,Meridian III,Data-room & security,France,EUR,2024-05-31,Active,
+PC-109,PEL,Pellucid Ltd,Halcyon II,Property management software,United Kingdom,GBP,2018-10-31,Exited,2025-03-14

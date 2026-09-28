@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: fct_company_kpi_monthly
+    description: >
+      One row per company x expected month. Source for the Sigma Portfolio KPI
+      dashboard: reporting status, local and GBP metrics, growth, LTM,
+      restatement details and data-quality flags.
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "concat(company_id, '|', period_month)"
+    columns:
+      - name: reporting_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['reported', 'reported_not_convertible', 'reported_under_query',
+                         'not_yet_reported', 'missing', 'not_expected']
+          # Informational: lists company-months nobody has submitted
+          - accepted_values:
+              name: no_missing_company_months
+              arguments:
+                values: ['reported', 'reported_not_convertible', 'reported_under_query',
+                         'not_yet_reported', 'not_expected']
+              config:
+                severity: warn
+
+  - name: agg_portfolio_kpi_monthly
+    description: One row per month x hierarchy node (portfolio and each fund) with headline metrics.
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "concat(period_month, '|', node_name)"

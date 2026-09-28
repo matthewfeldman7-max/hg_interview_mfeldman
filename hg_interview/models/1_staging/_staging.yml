@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: stg_portfolio__companies
+    description: One row per portfolio company.
+    columns:
+      - name: company_id
+        data_tests: [unique, not_null]
+      - name: company_code
+        data_tests: [unique, not_null]
+      - name: status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Active', 'Exited']
+
+  - name: stg_portfolio__fx_rates
+    description: One row per month x source currency, with reviewed overrides applied.
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "concat(rate_month, '|', from_ccy)"
+    columns:
+      - name: rate
+        data_tests: [not_null]
+      - name: to_ccy
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['GBP']
+
+  - name: stg_portfolio__kpi_submissions
+    description: >
+      One row per company x month x extract date. Exact duplicates collapsed,
+      codes resolved to company_id, reviewed corrections applied and flagged.
+    data_tests:
+      # Two rows with the same key but different values = ambiguous latest version: block
+      - unique:
+          arguments:
+            column_name: "concat(company_id, '|', period_month, '|', source_extract_date)"
+    columns:
+      - name: company_id
+        description: Resolved company. Null means a code that no alias covers - blocks the load.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_portfolio__companies')
+                field: company_id
+      - name: currency
+        description: Null is allowed here (inferred from the company master downstream).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['GBP', 'EUR', 'USD', 'SEK']

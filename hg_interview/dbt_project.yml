@@ -1,0 +1,52 @@
+name: 'hg_interview'
+version: '1.0.0'
+profile: 'hg_interview'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  hg_interview:
+    1_staging:
+      +materialized: view
+    2_intermediate:
+      +materialized: table
+    3_marts:
+      +materialized: table
+
+seeds:
+  hg_interview:
+    # Reviewed config: load everything as text so codes like 'US$' and
+    # month keys like '2024-09' are never reinterpreted by type inference
+    reference:
+      company_code_aliases:
+        +column_types: {raw_code: varchar, company_id: varchar, valid_from: varchar, valid_to: varchar, reason: varchar, approved_by: varchar}
+      currency_aliases:
+        +column_types: {raw_currency: varchar, currency: varchar, reason: varchar}
+      kpi_overrides:
+        # One row per confirmed correction (company, month, metric). Empty
+        # until a company confirms a value - nothing is corrected on a guess.
+        +column_types: {company_id: varchar, metric: varchar, period_month: varchar, corrected_value: double, reason: varchar, approved_by: varchar}
+      fx_rate_overrides:
+        +column_types: {month: varchar, from_ccy: varchar, rate: double, reason: varchar, approved_by: varchar}
+
+vars:
+  history_start: '2024-09-01'   # first month of the dashboard's 24-month history
+  # Date the extract was taken. In production this comes from the load
+  # metadata, so status ("not yet reported" vs "missing") is reproducible on re-run.
+  as_of_date: '2026-09-10'
+  submission_due_days: 10       # days after month end before a submission counts as missing
+  # Outlier thresholds. PLACEHOLDERS until set by the business (Task 5):
+  # a value outside the churn range, or more than outlier_multiple times
+  # above / below the company's trailing 12-month median, is flagged with a
+  # warning. It is not excluded - what to do with it is Task 5, Q6.
+  churn_pct_min: 0.1            # percentage points; exactly 0 is always allowed
+  churn_pct_max: 10
+  outlier_multiple: 3
